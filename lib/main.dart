@@ -1,7 +1,8 @@
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:funcionario_agendamento/pages/funcionario_page.dart';
+
+import 'package:funcionario_agendamento/pages/page_inicial.dart';
 
 import 'firebase_options.dart';
 
@@ -25,9 +26,7 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: FuncionarioPage(
-
-      ),
+      home: PaginaInicial(),
     );
   }
 }

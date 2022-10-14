@@ -15,8 +15,10 @@ class _FuncionarioPageState extends State<FuncionarioPage> {
   final formatdata = DateFormat("dd-MM-yyyy");
   final TextEditingController controllerDATA = TextEditingController();
 
+  var db = FirebaseFirestore.instance.collection("pendentes");
+
   final CollectionReference _clientes =
-  FirebaseFirestore.instance.collection('odontolife');
+      FirebaseFirestore.instance.collection('odontolife');
   Future<QuerySnapshot>? posdocumentList;
   String userNametxt = '';
 
@@ -37,7 +39,7 @@ class _FuncionarioPageState extends State<FuncionarioPage> {
   String? data;
   var c;
   String link1 =
-  ("https://web.whatsapp.com/send?phone={5598986087623}&text={mensagem}");
+      ("https://web.whatsapp.com/send?phone={5598986087623}&text={mensagem}");
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +52,6 @@ class _FuncionarioPageState extends State<FuncionarioPage> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-
             DateTimeField(
               decoration: InputDecoration(labelText: "DATA"),
               controller: controllerDATA,
@@ -60,7 +61,6 @@ class _FuncionarioPageState extends State<FuncionarioPage> {
                   userNametxt = controllerDATA.text;
                 });
                 initProcura(controllerDATA.text);
-
               },
               onShowPicker: (context, currentValue) async {
                 return showDatePicker(
@@ -70,8 +70,6 @@ class _FuncionarioPageState extends State<FuncionarioPage> {
                     lastDate: DateTime(2100));
               },
             ),
-
-
             SizedBox(
               height: 50,
             ),
@@ -117,94 +115,132 @@ class _FuncionarioPageState extends State<FuncionarioPage> {
                   );
                 }),*/
             FutureBuilder<QuerySnapshot>(
-                future: posdocumentList, builder: (context, snapshot) {
-              if (snapshot.hasData) {
-               // final users = snapshot.data!;
-                return Column(
-                  children: [
-                    Flex(
-                      direction: Axis.horizontal,
+                future: posdocumentList,
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    // final users = snapshot.data!;
+                    return Column(
                       children: [
-                        Expanded(
-                          child: ListView.builder(
-                              scrollDirection: Axis.vertical,
-                              shrinkWrap: true,
-
-                              itemCount: snapshot.data!.docs.length,
-                              itemBuilder: (context, index) {
-                                final DocumentSnapshot documentSnapshot =
-                                snapshot.data!.docs[index];
-                                return Card(
-                                  margin: const EdgeInsets.all(20),
-                                  child: Flex(
-                                    direction: Axis.horizontal,
-                                    children: [
-                                      Expanded(
-                                        child: ListTile(
-                                            title: Text('Nome: ${documentSnapshot['nome']}'),
-                                            subtitle: Row(
-                                              children: [
-                                                Text('CPF ${documentSnapshot['cpf']}'),
-                                                SizedBox(
-                                                  width: 20,
-                                                ),
-                                                Text('Doutor: ${documentSnapshot['doutor']}'),
-                                                SizedBox(
-                                                  width: 20,
-                                                ),
-                                                Text('Whatsapp: ${documentSnapshot['número de whatsapp']}'),
-                                                SizedBox(
-                                                  width: 20,
-                                                ),
-                                                Text('Data: ${documentSnapshot['data']}'),
-                                                SizedBox(
-                                                  width: 20,
-                                                ),
-                                                Text('Horário: ${documentSnapshot['horario']}'),
-                                              ],
-                                            ),
-                                            trailing: SizedBox(
-                                                width: 100,
+                        Flex(
+                          direction: Axis.horizontal,
+                          children: [
+                            Expanded(
+                              child: ListView.builder(
+                                  scrollDirection: Axis.vertical,
+                                  shrinkWrap: true,
+                                  itemCount: snapshot.data!.docs.length,
+                                  itemBuilder: (context, index) {
+                                    final DocumentSnapshot documentSnapshot =
+                                        snapshot.data!.docs[index];
+                                    return Card(
+                                      margin: const EdgeInsets.all(5),
+                                      child: Flex(
+                                        direction: Axis.horizontal,
+                                        children: [
+                                          Expanded(
+                                            child: ListTile(
+                                              title: Text(
+                                                  'Nome: ${documentSnapshot['nome']}'),
+                                              subtitle: Row(
+                                                mainAxisSize: MainAxisSize.min,
+                                                children: [
+                                                  Text(
+                                                      'CPF ${documentSnapshot['cpf']}'),
+                                                  SizedBox(
+                                                    width: 20,
+                                                  ),
+                                                  Text(
+                                                      'Doutor: ${documentSnapshot['doutor']}'),
+                                                  SizedBox(
+                                                    width: 20,
+                                                  ),
+                                                  Text(
+                                                      'Whatsapp: ${documentSnapshot['número de whatsapp']}'),
+                                                  SizedBox(
+                                                    width: 20,
+                                                  ),
+                                                  Text(
+                                                      'Data: ${documentSnapshot['data']}'),
+                                                  SizedBox(
+                                                    width: 20,
+                                                  ),
+                                                  Text(
+                                                      'Horário: ${documentSnapshot['horario']}'),
+                                                ],
+                                              ),
+                                              trailing: SizedBox(
+                                                width: 150,
                                                 child: Row(
-                                                    children: [
+                                                  children: [
                                                     IconButton(
-                                                    onPressed: ()async{
-                                                      setState(() {
-                                                        _delete(documentSnapshot.id);
-                                                      });
-                                                        //Navigator.of(context).push(MaterialPageRoute(builder: (context) => FuncionarioPage()));
-
-                                            },
-
-                                                icon: const Icon(Icons.delete)),
-                                        IconButton(
-                                            onPressed: () async {
-                                              var msg =
-                                              ('Olá ${documentSnapshot['nome']}, estamos passando para confirmar o seu agendamento para o dia ${documentSnapshot['data']}, com o Doutor ${documentSnapshot['doutor']}, no horário${documentSnapshot['horario']} CONFIRMA? [SIM/NÃO]');
-                                              final Uri url = Uri.parse(
-                                                  "https://web.whatsapp.com/send?phone=55${documentSnapshot['número de whatsapp']}&text=${msg}");
-                                              await launchUrl(url);
-                                            },
-                                            icon: const Icon(Icons.ad_units))
+                                                        onPressed: () async {
+                                                          setState(() {
+                                                            _delete(
+                                                                documentSnapshot
+                                                                    .id);
+                                                          });
+                                                          //Navigator.of(context).push(MaterialPageRoute(builder: (context) => FuncionarioPage()));
+                                                        },
+                                                        icon: const Icon(
+                                                            Icons.delete)),
+                                                    IconButton(
+                                                        onPressed: () async {
+                                                          var msg =
+                                                              ('Olá ${documentSnapshot['nome']}, estamos passando para confirmar o seu agendamento para o dia ${documentSnapshot['data']}, com o Doutor ${documentSnapshot['doutor']}, no horário${documentSnapshot['horario']} CONFIRMA? [SIM/NÃO]');
+                                                          final Uri url = Uri.parse(
+                                                              "https://web.whatsapp.com/send?phone=55${documentSnapshot['número de whatsapp']}&text=${msg}");
+                                                          await launchUrl(url);
+                                                        },
+                                                        icon: const Icon(
+                                                            Icons.ad_units)),
+                                                    IconButton(
+                                                        onPressed: () {
+                                                          final json = {
+                                                            'nome':
+                                                                documentSnapshot[
+                                                                    'nome'],
+                                                            'cpf':
+                                                                documentSnapshot[
+                                                                    'cpf'],
+                                                            'número de whatsapp':
+                                                                documentSnapshot[
+                                                                    'número de whatsapp'],
+                                                            'data':
+                                                                documentSnapshot[
+                                                                    'data'],
+                                                            'horario':
+                                                                documentSnapshot[
+                                                                    'horario'],
+                                                            'doutor':
+                                                                documentSnapshot[
+                                                                    'doutor'],
+                                                          };
+                                                          db
+                                                              .doc(
+                                                                  documentSnapshot[
+                                                                      'cpf'])
+                                                              .set(json);
+                                                        },
+                                                        icon: const Icon(Icons
+                                                            .access_alarm_rounded)),
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+                                          ),
                                         ],
-                                ),)
-                                ,
-                                ),
                                       ),
-                                    ],
-                                  )
-                                ,
-                                );
-                              }),
+                                    );
+                                  }),
+                            ),
+                          ],
                         ),
                       ],
-                    ),
-                  ],
-                );
-              } else {
-                return Center(child: CircularProgressIndicator());
-              }
-            }),
+                    );
+                  } else {
+                    return Center(child: CircularProgressIndicator());
+                  }
+                }),
           ],
         ),
       ),
@@ -213,12 +249,12 @@ class _FuncionarioPageState extends State<FuncionarioPage> {
 
   Future<void> _delete(String clienteId) async {
     //setState(() async{
-      await _clientes.doc(clienteId).delete();
-      ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Agendamento deletado com sucesso')));
-   // });
-
+    await _clientes.doc(clienteId).delete();
+    ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Agendamento deletado com sucesso')));
+    // });
   }
+
   /*
   Future<String> _delete(String clienteId) async {
     //setState(() async{
@@ -230,8 +266,7 @@ class _FuncionarioPageState extends State<FuncionarioPage> {
 
   }
 */
-  Widget buildUser(User user) =>
-      ListTile(
+  Widget buildUser(User user) => ListTile(
         leading: CircleAvatar(),
         title: Text(user.nome),
         subtitle: Row(
@@ -261,12 +296,9 @@ class _FuncionarioPageState extends State<FuncionarioPage> {
               IconButton(
                   onPressed: () async {
                     var msg =
-                    ('Olá ${user
-                        .nome}, estamos passando para confirmar o seu agendamento para o dia ${user
-                        .data}, no horário${user.horario} COMFIRMA? [SIM/NÃO]');
+                        ('Olá ${user.nome}, estamos passando para confirmar o seu agendamento para o dia ${user.data}, no horário${user.horario} COMFIRMA? [SIM/NÃO]');
                     final Uri url = Uri.parse(
-                        "https://web.whatsapp.com/send?phone=${user
-                            .numero}&text=${msg}");
+                        "https://web.whatsapp.com/send?phone=${user.numero}&text=${msg}");
                     await launchUrl(url);
                   },
                   icon: const Icon(Icons.ad_units))
@@ -275,14 +307,14 @@ class _FuncionarioPageState extends State<FuncionarioPage> {
         ),
       );
 
-  Stream<List<User>> readUsers() =>
-      FirebaseFirestore.instance
+  Stream<List<User>> readUsers() => FirebaseFirestore.instance
           .collection('odontolife')
           .where('data', isEqualTo: controllerDATA.text)
           .snapshots()
           .map((snapshot) {
         return snapshot.docs.map((doc) => User.fromJson(doc.data())).toList();
       });
+
 /*
   Stream<QuerySnapshot> getuser(BuildContext context) async* {
     var conec = FirebaseFirestore.instance
@@ -339,8 +371,7 @@ class _FuncionarioPageState extends State<FuncionarioPage> {
         return list1.add(element.data());
         //print(element.data());
       }
-    }
-    );
+    });
   }
 
 /*
@@ -374,8 +405,7 @@ class User {
     required this.numero,
   });
 
-  Map<String, dynamic> toJson() =>
-      {
+  Map<String, dynamic> toJson() => {
         'cpf': cpf,
         'nome': nome,
         'data': data,
@@ -383,11 +413,10 @@ class User {
         'número de whatsapp': numero,
       };
 
-  static User fromJson(Map<String, dynamic> json) =>
-      User(
-          cpf: json['cpf'],
-          nome: json['nome'],
-          data: json['data'],
-          horario: json['horario'],
-          numero: json['número de whatsapp']);
+  static User fromJson(Map<String, dynamic> json) => User(
+      cpf: json['cpf'],
+      nome: json['nome'],
+      data: json['data'],
+      horario: json['horario'],
+      numero: json['número de whatsapp']);
 }
