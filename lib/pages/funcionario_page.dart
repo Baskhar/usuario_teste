@@ -1,3 +1,5 @@
+
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 import 'package:flutter/material.dart';
@@ -116,8 +118,8 @@ class _FuncionarioPageState extends State<FuncionarioPage> {
                 }),*/
             FutureBuilder<QuerySnapshot>(
                 future: posdocumentList,
-                builder: (context, snapshot) {
-                  if (snapshot.hasData) {
+                builder: (context, AsyncSnapshot<QuerySnapshot> streamSnapshot) {
+                  if (streamSnapshot.hasData) {
                     // final users = snapshot.data!;
                     return Column(
                       children: [
@@ -128,10 +130,10 @@ class _FuncionarioPageState extends State<FuncionarioPage> {
                               child: ListView.builder(
                                   scrollDirection: Axis.vertical,
                                   shrinkWrap: true,
-                                  itemCount: snapshot.data!.docs.length,
+                                  itemCount: streamSnapshot.data!.docs.length,
                                   itemBuilder: (context, index) {
                                     final DocumentSnapshot documentSnapshot =
-                                        snapshot.data!.docs[index];
+                                        streamSnapshot.data!.docs[index];
                                     return Card(
                                       margin: const EdgeInsets.all(5),
                                       child: Flex(
@@ -175,9 +177,7 @@ class _FuncionarioPageState extends State<FuncionarioPage> {
                                                     IconButton(
                                                         onPressed: () async {
                                                           setState(() {
-                                                            _delete(
-                                                                documentSnapshot
-                                                                    .id);
+                                                            showDeleteTodosConfirmationDialog(documentSnapshot.id);
                                                           });
                                                           //Navigator.of(context).push(MaterialPageRoute(builder: (context) => FuncionarioPage()));
                                                         },
@@ -249,9 +249,12 @@ class _FuncionarioPageState extends State<FuncionarioPage> {
 
   Future<void> _delete(String clienteId) async {
     //setState(() async{
-    await _clientes.doc(clienteId).delete();
-    ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Agendamento deletado com sucesso')));
+
+      await _clientes.doc(clienteId).delete();
+      ScaffoldMessenger.of(context).showSnackBar(
+         const SnackBar(content: Text('Agendamento deletado com sucesso')));
+
+    
     // });
   }
 
@@ -291,7 +294,8 @@ class _FuncionarioPageState extends State<FuncionarioPage> {
           child: Row(
             children: [
               IconButton(
-                  onPressed: () => _delete(user.cpf),
+                  onPressed: () => //showDeleteTodosConfirmationDialog(user),
+           _delete(user.cpf),
                   icon: const Icon(Icons.delete)),
               IconButton(
                   onPressed: () async {
@@ -388,6 +392,36 @@ class _FuncionarioPageState extends State<FuncionarioPage> {
   }
 */
 
+  void showDeleteTodosConfirmationDialog(String id) {
+    //caixa de dialogo
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Apagar Agendamento?'),
+        //titulo
+        content: Text('Você tem certeza que deseja apagar este agedamento?'),
+        //conteúdo
+        actions: [
+          TextButton(
+            //botãode cancelar
+            onPressed: () {
+              Navigator.of(context).pop(); //fecha a caixa do dialogo
+            },
+            style: TextButton.styleFrom(backgroundColor: Color(0xff00d7f3)),
+            child: Text('Cancelar'),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop(); //fecha a caixa do dialogo
+              _delete(id); //chamando a função pra limpar tudo
+            }, //botão de limpar tudo
+            style: TextButton.styleFrom(backgroundColor:  Colors.red),
+            child: Text('apagar'),
+          ),
+        ], //conteúdo
+      ),
+    );
+  }
 }
 
 class User {
@@ -419,4 +453,7 @@ class User {
       data: json['data'],
       horario: json['horario'],
       numero: json['número de whatsapp']);
+
+
 }
+

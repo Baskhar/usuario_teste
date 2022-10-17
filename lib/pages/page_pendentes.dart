@@ -84,7 +84,7 @@ class _PagePendentesState extends State<PagePendentes> {
                                         IconButton(
                                             onPressed: () async {
                                               setState(() {
-                                                _delete(documentSnapshot.id);
+                                                showDeleteTodosConfirmationDialog(documentSnapshot.id);
                                               });
                                               //Navigator.of(context).push(MaterialPageRoute(builder: (context) => FuncionarioPage()));
                                             },
@@ -242,6 +242,36 @@ class _PagePendentesState extends State<PagePendentes> {
   }
 */
 
+  void showDeleteTodosConfirmationDialog(String id) {
+    //caixa de dialogo
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Apagar Pendência?'),
+        //titulo
+        content: Text('Você tem certeza que deseja apagar esta pendência? '),
+        //conteúdo
+        actions: [
+          TextButton(
+            //botãode cancelar
+            onPressed: () {
+              Navigator.of(context).pop(); //fecha a caixa do dialogo
+            },
+            style: TextButton.styleFrom(backgroundColor:  Color(0xff00d7f3)),
+            child: Text('Cancelar'),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop(); //fecha a caixa do dialogo
+              _delete(id); //chamando a função pra limpar tudo
+            }, //botão de limpar tudo
+            style: TextButton.styleFrom(backgroundColor: Colors.red),
+            child: Text('apagar'),
+          ),
+        ], //conteúdo
+      ),
+    );
+  }
 }
 
 class User {
