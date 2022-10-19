@@ -92,7 +92,7 @@ class _PagePendentesState extends State<PagePendentes> {
                                         IconButton(
                                             onPressed: () async {
                                               var msg =
-                                                  ('Olá ${documentSnapshot['nome']}, você não compareceu a consulta ontem, vamos remarcar? ');
+                                                  ('Olá ${documentSnapshot['nome']}, você não compareceu a consulta no dia ${documentSnapshot['data']} no horário das ${documentSnapshot['horario']}, vamos remarcar? ');
                                               final Uri url = Uri.parse(
                                                   "https://web.whatsapp.com/send?phone=55${documentSnapshot['número de whatsapp']}&text=${msg}");
                                               await launchUrl(url);
@@ -258,7 +258,9 @@ class _PagePendentesState extends State<PagePendentes> {
               Navigator.of(context).pop(); //fecha a caixa do dialogo
             },
             style: TextButton.styleFrom(backgroundColor:  Color(0xff00d7f3)),
-            child: Text('Cancelar'),
+            child: Text('Cancelar',style: TextStyle(
+              color: Colors.white,
+            ),),
           ),
           TextButton(
             onPressed: () {
@@ -266,7 +268,9 @@ class _PagePendentesState extends State<PagePendentes> {
               _delete(id); //chamando a função pra limpar tudo
             }, //botão de limpar tudo
             style: TextButton.styleFrom(backgroundColor: Colors.red),
-            child: Text('apagar'),
+            child: Text('apagar',style: TextStyle(
+              color: Colors.white,
+            ),),
           ),
         ], //conteúdo
       ),

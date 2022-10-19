@@ -117,7 +117,7 @@ class _FuncionarioPageState extends State<FuncionarioPage> {
                   );
                 }),*/
             FutureBuilder<QuerySnapshot>(
-                future: posdocumentList,
+               future: posdocumentList,
                 builder: (context, AsyncSnapshot<QuerySnapshot> streamSnapshot) {
                   if (streamSnapshot.hasData) {
                     // final users = snapshot.data!;
@@ -408,7 +408,9 @@ class _FuncionarioPageState extends State<FuncionarioPage> {
               Navigator.of(context).pop(); //fecha a caixa do dialogo
             },
             style: TextButton.styleFrom(backgroundColor: Color(0xff00d7f3)),
-            child: Text('Cancelar'),
+            child: Text('Cancelar',style: TextStyle(
+              color: Colors.white,
+            ),),
           ),
           TextButton(
             onPressed: () {
@@ -416,7 +418,9 @@ class _FuncionarioPageState extends State<FuncionarioPage> {
               _delete(id); //chamando a função pra limpar tudo
             }, //botão de limpar tudo
             style: TextButton.styleFrom(backgroundColor:  Colors.red),
-            child: Text('apagar'),
+            child: Text('apagar',style: TextStyle(
+              color: Colors.white,
+            ),),
           ),
         ], //conteúdo
       ),
